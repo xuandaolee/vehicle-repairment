@@ -1,6 +1,6 @@
 # Car Repair Center Management System
 
-Hệ thống quản lý trung tâm sửa chữa ô tô được xây dựng bằng Flask và MySQL.
+Hệ thống quản lý trung tâm sửa chữa ô tô được xây dựng bằng Flask, SQLAlchemy và MySQL với kiến trúc module hóa (Blueprints).
 
 ## Yêu cầu hệ thống
 
@@ -55,7 +55,7 @@ MYSQL_DB=car_repair_db
 
 ### 5. Khởi tạo database
 
-Chạy file SQL để tạo database và các bảng:
+Chạy file SQL để tạo database và các bảng ban đầu:
 
 ```bash
 mysql -u root -p < database/schema.sql
@@ -63,33 +63,15 @@ mysql -u root -p < database/schema.sql
 
 Hoặc sử dụng MySQL Workbench để import file `database/schema.sql`.
 
-### 6. Cập nhật schema (nếu cần)
-
-```bash
-python update_schema.py
-```
-
 ## Chạy ứng dụng
 
-### Development mode
+Sử dụng script `run.py` ở thư mục gốc:
 
 ```bash
-flask --app app run --debug
-```
-
-Hoặc:
-
-```bash
-python -m flask --app app run --debug
+python run.py
 ```
 
 Ứng dụng sẽ chạy tại: http://127.0.0.1:5000
-
-### Production mode
-
-```bash
-flask --app app run --host=0.0.0.0 --port=5000
-```
 
 ## Tài khoản mặc định
 
@@ -100,28 +82,41 @@ flask --app app run --host=0.0.0.0 --port=5000
 | tech       | 123      | Technician |
 | cashier    | 123      | Cashier    |
 
-## Cấu trúc thư mục
+## Cấu trúc thư mục (Mới)
+
+Dự án đã được tái cấu trúc theo mô hình package:
 
 ```
 car-repair/
-├── app.py              # Main Flask application
-├── config.py           # Configuration settings
-├── requirements.txt    # Python dependencies
-├── update_schema.py    # Database migration script
+├── app/                    # Application Package
+│   ├── __init__.py         # App factory, DB setup, Login Manager
+│   ├── models.py           # SQLAlchemy Data Models
+│   ├── dao/                # Data Access Objects (Tách biệt logic database)
+│   ├── index.py            # Main Blueprint (Home, Login, Logout)
+│   ├── admin.py            # Admin Blueprint
+│   ├── reception.py        # Reception Blueprint
+│   ├── technician.py       # Technician Blueprint
+│   ├── cashier.py          # Cashier Blueprint
+│   ├── static/             # Static assets (css, images)
+│   └── templates/          # Jinja2 Templates (theo module)
 ├── database/
-│   └── schema.sql      # Database schema
-├── static/
-│   └── images/         # Static images
-└── templates/          # Jinja2 HTML templates
-    ├── admin/
-    ├── cashier/
-    ├── reception/
-    └── technician/
+│   └── schema.sql          # Database schema gốc
+├── run.py                  # Entry point để chạy ứng dụng
+├── config.py               # Configuration settings
+├── requirements.txt        # Python dependencies
+├── .env                    # Environment variables
+└── README.md               # Project documentation
 ```
 
 ## Tính năng chính
 
-- **Reception**: Tiếp nhận xe, tạo phiếu tiếp nhận
-- **Technician**: Quản lý sửa chữa, thêm vật tư/phụ tùng
-- **Cashier**: Tạo hóa đơn, xử lý thanh toán
-- **Admin**: Dashboard thống kê, quản lý hệ thống
+- **Kiến trúc Module hóa**: Sử dụng Flask Blueprints để phân chia logic theo chức năng (Admin, Reception, Technician, Cashier).
+- **ORM**: Sử dụng Flask-SQLAlchemy thay vì raw SQL để tăng tính bảo mật và dễ bảo trì.
+- **DAO Pattern**: Tách biệt lớp truy cập dữ liệu vào thư mục `app/dao/`.
+- **Phân quyền**: Role-based Access Control (RBAC) với Flask-Login.
+
+### Các Module:
+- **Reception**: Tiếp nhận xe, tạo phiếu tiếp nhận.
+- **Technician**: Quản lý sửa chữa, thêm vật tư/phụ tùng, cập nhật trạng thái.
+- **Cashier**: Xem danh sách xe đã sửa xong, xuất hóa đơn, xử lý thanh toán.
+- **Admin**: Dashboard thống kê doanh thu, tần suất xe, quản lý linh kiện.
