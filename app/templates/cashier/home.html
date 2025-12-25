@@ -25,7 +25,6 @@
         background-image: unset !important;
     }
 
-    /* Header */
     .top-header {
         background-color: #990000;
         color: white;
@@ -61,17 +60,32 @@
     .header-actions {
         display: flex;
         gap: 1rem;
-        font-size: 1.2rem;
+        align-items: center;
     }
 
-    /* Main Content */
+    .header-actions a {
+        position: relative;
+        display: inline-block;
+    }
+
+    .header-actions img {
+        width: 28px;
+        height: 28px;
+        cursor: pointer;
+        filter: brightness(0) invert(1);
+        transition: transform 0.3s ease;
+    }
+
+    .header-actions a:hover img {
+        transform: scale(1.1);
+    }
+
     .main-body {
         flex: 1;
         padding: 2rem 4rem;
         overflow-y: auto;
     }
 
-    /* Controls */
     .controls-row {
         display: flex;
         justify-content: space-between;
@@ -127,7 +141,6 @@
 
     .filter-btn.active {
         background-color: #FFF0F0;
-        /* Light red tint */
     }
 
     .note-text {
@@ -137,7 +150,6 @@
         font-style: italic;
     }
 
-    /* Table */
     .cashier-table {
         width: 100%;
         border-collapse: collapse;
@@ -159,15 +171,12 @@
         vertical-align: middle;
         text-align: center;
         background-color: #F0F0F0;
-        /* Light gray bg from design */
     }
 
     .cashier-table tr:nth-child(even) td {
         background-color: #E8E8E8;
-        /* Slightly darker for stripes if needed, or keep flat */
     }
 
-    /* Footer */
     .footer {
         background-color: #333;
         color: white;
@@ -203,9 +212,10 @@
         <img src="{{ url_for('static', filename='images/logo-white.png') }}" alt="CRC">
     </div>
 
-    <div class="header-actions">
-        <img src="{{ url_for('static', filename='images/bell.png') }}" alt="Add" style="width: 30px; height: auto;">
-        <img src="{{ url_for('static', filename='images/settings.png') }}" alt="Add" style="width: 30px; height: auto;">
+<div class="header-actions">
+        <a href="{{ url_for('main.logout') }}" title="Logout">
+            <img src="{{ url_for('static', filename='images/logout.png') }}" alt="Logout">
+        </a>
     </div>
 </div>
 
