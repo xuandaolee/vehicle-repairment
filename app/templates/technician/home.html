@@ -2,7 +2,7 @@
 
 {% block content %}
 <style>
-    /* Reuse styles from reception/home.html for consistency */
+
     .app-container {
         flex-direction: column;
     }
@@ -20,7 +20,6 @@
         background-image: unset !important;
     }
 
-    /* Header */
     .top-header {
         background-color: #8B0000;
         color: white;
@@ -55,11 +54,27 @@
 
     .header-actions {
         display: flex;
-        gap: 1.5rem;
-        font-size: 1.5rem;
+        gap: 1rem;
+        align-items: center;
     }
 
-    /* Status Filter Bar (Specific to Technician) */
+    .header-actions a {
+        position: relative;
+        display: inline-block;
+    }
+
+    .header-actions img {
+        width: 28px;
+        height: 28px;
+        cursor: pointer;
+        filter: brightness(0) invert(1);
+        transition: transform 0.3s ease;
+    }
+
+    .header-actions a:hover img {
+        transform: scale(1.1);
+    }
+
     .status-filter-bar {
         display: flex;
         justify-content: center;
@@ -93,14 +108,12 @@
         height: 20px;
     }
 
-    /* Main Content */
     .main-body {
         flex: 1;
         padding: 0 4rem 2rem 4rem;
         overflow-y: auto;
     }
 
-    /* Table */
     .reception-table {
         width: 100%;
         border-collapse: collapse;
@@ -134,7 +147,6 @@
         gap: 0.5rem;
     }
 
-    /* Footer */
     .footer {
         background-color: #333;
         color: white;
@@ -171,9 +183,10 @@
 
     <img src="{{ url_for('static', filename='images/logo-white.png') }}" alt="Logo" class="header-logo">
 
-    <div class="header-actions">
-        <img src="{{ url_for('static', filename='images/bell.png') }}" alt="Add" style="width: 30px; height: auto;">
-        <img src="{{ url_for('static', filename='images/settings.png') }}" alt="Add" style="width: 30px; height: auto;">
+<div class="header-actions">
+        <a href="{{ url_for('main.logout') }}" title="Logout">
+            <img src="{{ url_for('static', filename='images/logout.png') }}" alt="Logout">
+        </a>
     </div>
 </div>
 
@@ -281,7 +294,6 @@
     </div>
 </div>
 
-<!-- Modal Container -->
 {% if modal %}
 <div class="modal-overlay">
     <a href="{{ url_for('technician.home') }}"

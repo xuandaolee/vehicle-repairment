@@ -6,18 +6,15 @@ reception_bp = Blueprint('reception', __name__)
 
 
 def check_reception():
-    """Check if current user is reception or admin"""
     role = session.get('role')
     return role in ['reception', 'admin']
 
 
 def get_reception_data():
-    """Get common reception data for templates"""
     max_cars = settings_dao.get_setting_int('max_cars_per_day', 30)
     cars_today_count = reception_dao.count_today_slips()
     slips_data = reception_dao.get_all_slips()
-    
-    # Convert to list of dicts for template compatibility
+
     slips = []
     for slip, car in slips_data:
         slips.append({
@@ -40,7 +37,6 @@ def get_reception_data():
 
 @reception_bp.route('/')
 def home():
-    """Reception home page"""
     if not check_reception():
         return redirect(url_for('main.login'))
     
@@ -51,20 +47,17 @@ def home():
 
 @reception_bp.route('/add', methods=['GET', 'POST'])
 def add_car():
-    """Add or edit a reception slip"""
     if not check_reception():
         return redirect(url_for('main.login'))
     
     if request.method == 'POST':
-        # Check max cars limit
         max_cars = settings_dao.get_setting_int('max_cars_per_day', 30)
         current_count = reception_dao.count_today_slips()
         
         if current_count >= max_cars:
             flash(f'Daily limit of {max_cars} cars reached. Cannot receive more cars today.')
             return redirect(url_for('reception.home'))
-            
-        # Process form
+
         license_plate = request.form['license_plate']
         owner_name = request.form['owner_name']
         phone = request.form['phone_number']
@@ -74,11 +67,9 @@ def add_car():
         vehicle_type = request.form.get('vehicle_type', 'Car')
         color = request.form.get('color', '')
         status = request.form.get('status', 'pending')
-        
-        # Create or update car
+
         car = car_dao.create_or_update_car(license_plate, owner_name, phone, address, email, vehicle_type, color)
-        
-        # Check if updating existing slip
+
         slip_id = request.args.get('slip_id')
         if slip_id:
             reception_dao.update_slip(int(slip_id), car.id, description, status)
@@ -88,11 +79,9 @@ def add_car():
             flash('Car received successfully!')
             
         return redirect(url_for('reception.home'))
-    
-    # GET request - show modal
+
     max_cars, cars_today_count, slips = get_reception_data()
-    
-    # Check if editing
+
     slip_id = request.args.get('slip_id')
     slip = None
     if slip_id:
@@ -120,7 +109,6 @@ def add_car():
 
 @reception_bp.route('/detail/<int:slip_id>')
 def detail(slip_id):
-    """View reception slip details"""
     if not check_reception():
         return redirect(url_for('main.login'))
     

@@ -26,16 +26,13 @@ db = SQLAlchemy(app=app)
 login_manager = LoginManager(app=app)
 login_manager.login_view = 'main.login'
 
-# Import models after db is created
 from app import models
 
-# User loader for Flask-Login
 @login_manager.user_loader
 def load_user(user_id):
     from app.models import User
     return User.query.get(int(user_id))
 
-# Register blueprints
 from app.index import main_bp
 from app.admin import admin_bp
 from app.reception import reception_bp
