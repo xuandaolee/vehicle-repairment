@@ -81,6 +81,7 @@ def home():
     filter_status = request.args.get('filter')
     slips = get_technician_data(filter_status)
     
+    print(slips)
     return render_template('technician/home.html', slips=slips, current_filter=filter_status)
 
 
@@ -150,7 +151,7 @@ def view_detail(slip_id):
             })
     
     components = component_dao.get_all_active()
-    
+    print(repair)
     return render_template('technician/home.html', slips=slips, current_filter=filter_status, modal='detail', repair=repair, items=items, components=components)
 
 
@@ -161,7 +162,6 @@ def add_item_view(repair_id):
         return redirect(url_for('main.login'))
     
     slips = get_technician_data()
-    
     result = repair_dao.get_repair_by_id(repair_id)
     if not result:
         flash('Repair not found.')
@@ -279,9 +279,11 @@ def add_item(repair_id):
         component_id = None
 
     repair_dao.add_repair_detail(repair_id, component_id, quantity, current_price, category, labor_fee)
+    repair, slip, car = repair_dao.get_repair_by_id(repair_id)
+
     flash('Item added.')
     
-    return redirect(url_for('technician.view_detail', slip_id=repair_id))
+    return redirect(url_for('technician.view_detail', slip_id=slip.id))
 
 
 @technician_bp.route('/item/update/<int:item_id>', methods=['POST'])
@@ -327,6 +329,7 @@ def delete_item(item_id):
     
     repair_id = repair_dao.delete_repair_detail(item_id)
     
+    print(repair_id)
     if repair_id:
         flash('Item deleted.')
         return redirect(url_for('technician.view_detail', slip_id=repair_id))

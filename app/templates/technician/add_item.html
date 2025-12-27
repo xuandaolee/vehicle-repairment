@@ -43,7 +43,7 @@
 
         <div class="add-item-actions">
             <button type="submit" class="btn-save">{{ 'Update' if edit_item else 'Save' }}</button>
-            <a href="{{ url_for('technician.view_detail', slip_id=repair.repair_id) }}" class="btn-cancel">Cancel</a>
+            <a href="{{ url_for('technician.view_detail', slip_id=repair.reception_id) }}" class="btn-cancel">Cancel</a>
         </div>
     </form>
 </div>
