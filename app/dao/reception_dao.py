@@ -5,7 +5,6 @@ from datetime import datetime, date
 
 
 def get_all_slips():
-    """Get all reception slips with car info, ordered by date desc"""
     return db.session.query(ReceptionSlip, Car)\
         .join(Car, ReceptionSlip.car_id == Car.id)\
         .order_by(ReceptionSlip.reception_date.desc())\
@@ -13,7 +12,6 @@ def get_all_slips():
 
 
 def get_slip_by_id(slip_id):
-    """Get reception slip by ID with car info"""
     return db.session.query(ReceptionSlip, Car)\
         .join(Car, ReceptionSlip.car_id == Car.id)\
         .filter(ReceptionSlip.id == slip_id)\
@@ -21,12 +19,10 @@ def get_slip_by_id(slip_id):
 
 
 def get_slip_only_by_id(slip_id):
-    """Get reception slip only by ID"""
     return ReceptionSlip.query.get(slip_id)
 
 
 def create_slip(car_id, description=None, status='pending'):
-    """Create a new reception slip"""
     slip = ReceptionSlip(
         car_id=car_id,
         description=description,
@@ -39,7 +35,6 @@ def create_slip(car_id, description=None, status='pending'):
 
 
 def update_slip(slip_id, car_id=None, description=None, status=None):
-    """Update reception slip"""
     slip = ReceptionSlip.query.get(slip_id)
     if slip:
         if car_id is not None:
@@ -53,7 +48,6 @@ def update_slip(slip_id, car_id=None, description=None, status=None):
 
 
 def update_slip_status(slip_id, status):
-    """Update slip status only"""
     slip = ReceptionSlip.query.get(slip_id)
     if slip:
         slip.status = status
@@ -62,7 +56,6 @@ def update_slip_status(slip_id, status):
 
 
 def count_today_slips():
-    """Count slips received today"""
     today = date.today()
     return ReceptionSlip.query.filter(
         func.date(ReceptionSlip.reception_date) == today
@@ -70,7 +63,6 @@ def count_today_slips():
 
 
 def get_slips_by_status(statuses):
-    """Get slips by status list with car info"""
     return db.session.query(ReceptionSlip, Car)\
         .join(Car, ReceptionSlip.car_id == Car.id)\
         .filter(ReceptionSlip.status.in_(statuses))\

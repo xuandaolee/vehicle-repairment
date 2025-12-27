@@ -7,17 +7,14 @@ technician_bp = Blueprint('technician', __name__)
 
 
 def check_technician():
-    """Check if current user is technician or admin"""
     role = session.get('role')
     return role in ['technician', 'admin']
 
 
 def get_technician_data(filter_status=None):
-    """Get slips for technician view"""
     slips = []
     user_id = session.get('user_id')
-    
-    # 1. Get Pending/Waiting slips (from reception_slips)
+
     if not filter_status or filter_status in ['quote', 'waiting']:
         results = db.session.query(ReceptionSlip, Car)\
             .join(Car, ReceptionSlip.car_id == Car.id)\
@@ -38,7 +35,6 @@ def get_technician_data(filter_status=None):
                 'reception_date': slip.reception_date
             })
 
-    # 2. Get Repairing/Completed slips (from repair_slips)
     if not filter_status or filter_status in ['repairing', 'complete']:
         db_status = 'completed' if filter_status == 'complete' else filter_status
         
@@ -64,8 +60,7 @@ def get_technician_data(filter_status=None):
                 'date_display': repair.start_date,
                 'reception_date': slip.reception_date
             })
-    
-    # Sort by date if no filter
+
     if not filter_status:
         slips.sort(key=lambda x: x['date_display'] if x['date_display'] else x['reception_date'], reverse=True)
         
@@ -74,7 +69,6 @@ def get_technician_data(filter_status=None):
 
 @technician_bp.route('/')
 def home():
-    """Technician home page"""
     if not check_technician():
         return redirect(url_for('main.login'))
     
@@ -87,14 +81,11 @@ def home():
 
 @technician_bp.route('/start/<int:slip_id>', methods=['POST'])
 def start_repair(slip_id):
-    """Start a repair from reception slip"""
     if not check_technician():
         return redirect(url_for('main.login'))
-    
-    # Create repair slip
+
     repair = repair_dao.create_repair_slip(slip_id, session['user_id'])
-    
-    # Update reception slip status
+
     reception_dao.update_slip_status(slip_id, 'repairing')
     
     flash('Repair started. Please add items.')
@@ -103,22 +94,19 @@ def start_repair(slip_id):
 
 @technician_bp.route('/detail/<int:slip_id>')
 def view_detail(slip_id):
-    """View repair detail"""
     if not check_technician():
         return redirect(url_for('main.login'))
     
     filter_status = request.args.get('filter')
     slips = get_technician_data(filter_status)
-    
-    # Get reception slip with car info
+
     result = reception_dao.get_slip_by_id(slip_id)
     if not result:
         flash('Slip not found.')
         return redirect(url_for('technician.home'))
     
     slip, car = result
-    
-    # Check if repair exists
+
     repair_slip = repair_dao.get_repair_by_reception_id(slip_id)
     
     repair = {
@@ -157,7 +145,6 @@ def view_detail(slip_id):
 
 @technician_bp.route('/repair/<int:repair_id>/add', methods=['GET'])
 def add_item_view(repair_id):
-    """View to add item to repair"""
     if not check_technician():
         return redirect(url_for('main.login'))
     
@@ -204,7 +191,6 @@ def add_item_view(repair_id):
 
 @technician_bp.route('/repair/<int:repair_id>/edit/<int:item_id>', methods=['GET'])
 def edit_item_view(repair_id, item_id):
-    """View to edit item"""
     if not check_technician():
         return redirect(url_for('main.login'))
     
@@ -256,7 +242,6 @@ def edit_item_view(repair_id, item_id):
 
 @technician_bp.route('/repair/<int:repair_id>/add_item', methods=['POST'])
 def add_item(repair_id):
-    """Add item to repair"""
     if not check_technician():
         return redirect(url_for('main.login'))
     
@@ -288,7 +273,6 @@ def add_item(repair_id):
 
 @technician_bp.route('/item/update/<int:item_id>', methods=['POST'])
 def update_item(item_id):
-    """Update repair item"""
     if not check_technician():
         return redirect(url_for('main.login'))
     
@@ -323,7 +307,6 @@ def update_item(item_id):
 
 @technician_bp.route('/item/delete/<int:item_id>', methods=['POST'])
 def delete_item(item_id):
-    """Delete repair item"""
     if not check_technician():
         return redirect(url_for('main.login'))
     
@@ -339,7 +322,6 @@ def delete_item(item_id):
 
 @technician_bp.route('/repair/<int:repair_id>/finish', methods=['POST'])
 def finish_repair(repair_id):
-    """Finish repair and send to cashier"""
     if not check_technician():
         return redirect(url_for('main.login'))
     

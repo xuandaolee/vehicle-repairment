@@ -24,7 +24,6 @@
         background-color: #E0E0E0;
     }
 
-    /* Header */
     .top-header {
         background-color: #990000;
         color: white;
@@ -63,7 +62,6 @@
         font-size: 1.2rem;
     }
 
-    /* Main Content - Invoice Paper */
     .main-body {
         flex: 1;
         padding: 2rem;
@@ -167,7 +165,6 @@
         margin-bottom: 0.5rem;
     }
 
-    /* Invoice Table */
     .invoice-table {
         width: 100%;
         border-collapse: collapse;
@@ -206,7 +203,6 @@
         font-size: 1.1rem;
     }
 
-    /* Signatures */
     .signatures {
         display: flex;
         justify-content: space-between;
@@ -236,7 +232,6 @@
         width: 200px;
     }
 
-    /* Warranty */
     .warranty-section {
         font-size: 0.85rem;
         color: #333;
@@ -279,7 +274,6 @@
         text-decoration: none;
     }
 
-    /* Footer */
     .footer {
         background-color: #333;
         color: white;
@@ -404,7 +398,6 @@
                 </tr>
                 {% endfor %}
 
-                <!-- Summary Rows -->
                 <tr class="summary-row">
                     <td colspan="5" style="text-align: left; padding-left: 2rem;">Total</td>
                     <td>{{ "{:,.0f}".format(subtotal) }}</td>

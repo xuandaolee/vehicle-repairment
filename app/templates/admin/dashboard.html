@@ -26,7 +26,6 @@
         background-color: #F5F5F5;
     }
 
-    /* Header */
     .top-header {
         background-color: #990000;
         color: white;
@@ -83,7 +82,6 @@
     }
 
 
-    /* Main Content */
     .main-body {
         flex: 1;
         padding: 2rem;
@@ -304,7 +302,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 
 <script>
-// Update notification badge count
 function updateNotificationBadge() {
     fetch('{{ url_for("admin.low_stock_count") }}')
         .then(response => response.json())
@@ -323,11 +320,9 @@ function updateNotificationBadge() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Update notification badge
     updateNotificationBadge();
     setInterval(updateNotificationBadge, 60000); // Update every 60 seconds
 
-    // Charts code (same as before)
     {% if chart_data %}
     const revenueCtx = document.getElementById('revenueChart').getContext('2d');
     new Chart(revenueCtx, {
