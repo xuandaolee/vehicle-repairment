@@ -30,7 +30,7 @@ def get_repair_by_reception_id(reception_slip_id):
     return RepairSlip.query.filter(RepairSlip.reception_slip_id == reception_slip_id).first()
 
 
-def get_repairs_by_technician(technician_id, status=None):
+def get_repairs_by_technician(technician_id, status=None, keyword=None):
     query = db.session.query(RepairSlip, ReceptionSlip, Car)\
         .join(ReceptionSlip, RepairSlip.reception_slip_id == ReceptionSlip.id)\
         .join(Car, ReceptionSlip.car_id == Car.id)\
@@ -38,6 +38,13 @@ def get_repairs_by_technician(technician_id, status=None):
     
     if status:
         query = query.filter(ReceptionSlip.status == status)
+
+    if keyword:
+        search_term = f"%{keyword}%"
+        query = query.filter(
+            (Car.license_plate.ilike(search_term)) |
+            (Car.owner_name.ilike(search_term))
+        )
     
     return query.order_by(RepairSlip.start_date.desc()).all()
 

@@ -212,23 +212,32 @@
         <img src="{{ url_for('static', filename='images/logo-white.png') }}" alt="CRC">
     </div>
 
+    <div class="header-actions">
+        <img src="{{ url_for('static', filename='images/bell.png') }}" alt="Add" style="width: 30px; height: auto;">
         <div class="header-actions">
-            <img src="{{ url_for('static', filename='images/bell.png') }}" alt="Add" style="width: 30px; height: auto;">
-            <div class="header-actions">
-                <a href="{{ url_for('main.logout') }}">
-                    <img src="{{ url_for('static', filename='images/logout.png') }}" alt="Logout"
-                        style="width: 30px; height: 32px; cursor: pointer;">
-                </a>
-            </div>
+            <a href="{{ url_for('main.logout') }}">
+                <img src="{{ url_for('static', filename='images/logout.png') }}" alt="Logout"
+                    style="width: 30px; height: 32px; cursor: pointer;">
+            </a>
         </div>
+    </div>
 </div>
 
 <div class="main-body">
     <div class="controls-row">
         <div class="search-box">
-            <input type="text" class="search-input" placeholder="Enter search information...">
-            <img class="search-icon" src="{{ url_for('static', filename='images/search.png') }}" alt="Search"
-                style="width: 40px; height: auto;">
+            <form action="{{ url_for('cashier.home') }}" method="GET" style="display: flex; width: 100%;">
+                {% if current_filter %}
+                <input type="hidden" name="filter" value="{{ current_filter }}">
+                {% endif %}
+                <input type="text" name="q" class="search-input" placeholder="Enter search information..."
+                    value="{{ keyword if keyword else '' }}">
+                <button type="submit"
+                    style="background: none; border: none; cursor: pointer; position: absolute; right: 0px; top: 10px;">
+                    <img class="search-icon" src="{{ url_for('static', filename='images/search.png') }}" alt="Search"
+                        style="width: 30px; height: auto; position: static;">
+                </button>
+            </form>
         </div>
 
         <div class="filter-buttons">

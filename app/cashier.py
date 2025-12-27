@@ -20,6 +20,7 @@ def home():
     vat_rate = settings_dao.get_setting_float('vat_rate', 10.0)
 
     filter_status = request.args.get('filter')
+    keyword = request.args.get('q')
 
     query = db.session.query(ReceptionSlip, Car, RepairSlip)\
         .join(Car, ReceptionSlip.car_id == Car.id)\
@@ -31,7 +32,14 @@ def home():
         query = query.filter(ReceptionSlip.status == 'paid')
     else:
         query = query.filter(ReceptionSlip.status.in_(['completed', 'paid']))
-        
+    
+    if keyword:
+        search_term = f"%{keyword}%"
+        query = query.filter(
+            (Car.license_plate.ilike(search_term)) |
+            (Car.owner_name.ilike(search_term))
+        )
+
     results = query.order_by(RepairSlip.end_date.desc()).all()
     
     completed_slips = []
@@ -64,7 +72,7 @@ def home():
             'license_plate': car.license_plate
         })
     
-    return render_template('cashier/home.html', completed_slips=completed_slips, recent_invoices=recent_invoices, vat_rate=vat_rate, current_filter=filter_status)
+    return render_template('cashier/home.html', completed_slips=completed_slips, recent_invoices=recent_invoices, vat_rate=vat_rate, current_filter=filter_status, keyword=keyword)
 
 
 @cashier_bp.route('/invoice/<int:repair_id>')

@@ -181,15 +181,15 @@
 
     <img src="{{ url_for('static', filename='images/logo-white.png') }}" alt="Logo" class="header-logo">
 
+    <div class="header-actions">
+        <img src="{{ url_for('static', filename='images/bell.png') }}" alt="Add" style="width: 30px; height: auto;">
         <div class="header-actions">
-            <img src="{{ url_for('static', filename='images/bell.png') }}" alt="Add" style="width: 30px; height: auto;">
-            <div class="header-actions">
-                <a href="{{ url_for('main.logout') }}">
-                    <img src="{{ url_for('static', filename='images/logout.png') }}" alt="Logout"
-                        style="width: 30px; height: 32px; cursor: pointer;">
-                </a>
-            </div>
+            <a href="{{ url_for('main.logout') }}">
+                <img src="{{ url_for('static', filename='images/logout.png') }}" alt="Logout"
+                    style="width: 30px; height: 32px; cursor: pointer;">
+            </a>
         </div>
+    </div>
 </div>
 
 <div class="status-filter-bar">
@@ -223,6 +223,24 @@
 </div>
 
 <div class="main-body">
+    <div class="controls-row" style="display: flex; justify-content: center; margin-bottom: 1rem;">
+        <div class="search-box" style="position: relative; width: 400px; display: flex; align-items: center;">
+            <form action="{{ url_for('technician.home') }}" method="GET" style="display: flex; width: 100%;">
+                {% if current_filter %}
+                <input type="hidden" name="filter" value="{{ current_filter }}">
+                {% endif %}
+                <input type="text" name="q" class="search-input" placeholder="Search plate or name..."
+                    value="{{ keyword if keyword else '' }}"
+                    style="width: 100%; padding: 0.5rem 1rem; border: 1px solid #8B0000; border-radius: 4px;">
+                <button type="submit"
+                    style="background: none; border: none; cursor: pointer; position: absolute; right: 0; top: -5px;">
+                    <img class="search-icon" src="{{ url_for('static', filename='images/search.png') }}" alt="Search"
+                        style="width: 24px; height: auto;">
+                </button>
+            </form>
+        </div>
+    </div>
+
     <table class="reception-table">
         <thead>
             <tr>

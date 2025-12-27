@@ -11,16 +11,23 @@ def check_technician():
     return role in ['technician', 'admin']
 
 
-def get_technician_data(filter_status=None):
+def get_technician_data(filter_status=None, keyword=None):
     slips = []
     user_id = session.get('user_id')
 
     if not filter_status or filter_status in ['quote', 'waiting']:
-        results = db.session.query(ReceptionSlip, Car)\
+        query = db.session.query(ReceptionSlip, Car)\
             .join(Car, ReceptionSlip.car_id == Car.id)\
-            .filter(ReceptionSlip.status.in_(['pending', 'waiting']))\
-            .order_by(ReceptionSlip.reception_date.asc())\
-            .all()
+            .filter(ReceptionSlip.status.in_(['pending', 'waiting']))
+            
+        if keyword:
+            search_term = f"%{keyword}%"
+            query = query.filter(
+                (Car.license_plate.ilike(search_term)) |
+                (Car.owner_name.ilike(search_term))
+            )
+            
+        results = query.order_by(ReceptionSlip.reception_date.asc()).all()
         
         for slip, car in results:
             slips.append({
@@ -38,15 +45,7 @@ def get_technician_data(filter_status=None):
     if not filter_status or filter_status in ['repairing', 'complete']:
         db_status = 'completed' if filter_status == 'complete' else filter_status
         
-        query = db.session.query(RepairSlip, ReceptionSlip, Car)\
-            .join(ReceptionSlip, RepairSlip.reception_slip_id == ReceptionSlip.id)\
-            .join(Car, ReceptionSlip.car_id == Car.id)\
-            .filter(RepairSlip.technician_id == user_id)
-        
-        if db_status:
-            query = query.filter(ReceptionSlip.status == db_status)
-            
-        results = query.order_by(RepairSlip.start_date.desc()).all()
+        results = repair_dao.get_repairs_by_technician(user_id, status=db_status, keyword=keyword)
         
         for repair, slip, car in results:
             slips.append({
@@ -73,10 +72,11 @@ def home():
         return redirect(url_for('main.login'))
     
     filter_status = request.args.get('filter')
-    slips = get_technician_data(filter_status)
+    keyword = request.args.get('q')
+    slips = get_technician_data(filter_status, keyword)
     
     print(slips)
-    return render_template('technician/home.html', slips=slips, current_filter=filter_status)
+    return render_template('technician/home.html', slips=slips, current_filter=filter_status, keyword=keyword)
 
 
 @technician_bp.route('/start/<int:slip_id>', methods=['POST'])

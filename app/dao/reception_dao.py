@@ -4,11 +4,18 @@ from sqlalchemy import func
 from datetime import datetime, date
 
 
-def get_all_slips():
-    return db.session.query(ReceptionSlip, Car)\
-        .join(Car, ReceptionSlip.car_id == Car.id)\
-        .order_by(ReceptionSlip.reception_date.desc())\
-        .all()
+def get_all_slips(keyword=None):
+    query = db.session.query(ReceptionSlip, Car)\
+        .join(Car, ReceptionSlip.car_id == Car.id)
+
+    if keyword:
+        search_term = f"%{keyword}%"
+        query = query.filter(
+            (Car.license_plate.ilike(search_term)) |
+            (Car.owner_name.ilike(search_term))
+        )
+
+    return query.order_by(ReceptionSlip.reception_date.desc()).all()
 
 
 def get_slip_by_id(slip_id):

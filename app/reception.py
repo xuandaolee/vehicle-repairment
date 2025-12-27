@@ -10,10 +10,10 @@ def check_reception():
     return role in ['reception', 'admin']
 
 
-def get_reception_data():
+def get_reception_data(keyword=None):
     max_cars = settings_dao.get_setting_int('max_cars_per_day', 30)
     cars_today_count = reception_dao.count_today_slips()
-    slips_data = reception_dao.get_all_slips()
+    slips_data = reception_dao.get_all_slips(keyword=keyword)
 
     slips = []
     for slip, car in slips_data:
@@ -40,9 +40,10 @@ def home():
     if not check_reception():
         return redirect(url_for('main.login'))
     
-    max_cars, cars_today_count, slips = get_reception_data()
+    keyword = request.args.get('q')
+    max_cars, cars_today_count, slips = get_reception_data(keyword)
     
-    return render_template('reception/home.html', slips=slips, cars_today_count=cars_today_count, max_cars=max_cars)
+    return render_template('reception/home.html', slips=slips, cars_today_count=cars_today_count, max_cars=max_cars, keyword=keyword)
 
 
 @reception_bp.route('/add', methods=['GET', 'POST'])
