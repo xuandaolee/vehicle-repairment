@@ -2,6 +2,7 @@
 
 {% block content %}
 <style>
+    /* Reset & Base */
     body,
     html {
         margin: 0;
@@ -31,6 +32,7 @@
         position: relative;
     }
 
+    /* Header */
     .top-header {
         background-color: #990000;
         /* Deep Red */
@@ -86,6 +88,7 @@
         cursor: pointer;
     }
 
+    /* Dashboard Grid */
     .dashboard-container {
         flex: 1;
         display: flex;
@@ -122,6 +125,7 @@
         transform: scale(1.02);
     }
 
+    /* Card Variants based on image */
     .card-light {
         background-color: #F0F0E0;
         /* Beige/Light */
@@ -159,6 +163,7 @@
         letter-spacing: 1px;
     }
 
+    /* Footer */
     .footer {
         background-color: #333;
         color: white;
@@ -197,6 +202,7 @@
     </div>
 
     <div class="center-logo">
+        <!-- Placeholder for the logo in the middle -->
         <img src="{{ url_for('static', filename='images/logo-white.png') }}" alt="CRC">
     </div>
 
@@ -210,6 +216,7 @@
 
 <div class="dashboard-container">
     <div class="modules-grid">
+        <!-- Technician: Light -->
         {% if session.get('role') == 'technician' or session.get('role') == 'admin' %}
         <a href="{{ url_for('technician.home') }}" class="module-card card-light">
             <div class="module-icon">
@@ -219,6 +226,7 @@
         </a>
         {% endif %}
 
+        <!-- Reception: Red -->
         {% if session.get('role') == 'reception' or session.get('role') == 'admin' %}
         <a href="{{ url_for('reception.home') }}" class="module-card card-red">
             <div class="module-icon">
@@ -228,6 +236,7 @@
         </a>
         {% endif %}
 
+        <!-- Cashier: Red -->
         {% if session.get('role') == 'cashier' or session.get('role') == 'admin' %}
         <a href="{{ url_for('cashier.home') }}" class="module-card card-red">
             <div class="module-icon">
@@ -237,6 +246,7 @@
         </a>
         {% endif %}
 
+        <!-- Manager/Admin: Dark/Light -->
         {% if session.get('role') == 'admin' %}
         <a href="{{ url_for('admin.dashboard') }}" class="module-card card-light">
             <div class="module-icon">

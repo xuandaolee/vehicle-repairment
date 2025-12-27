@@ -7,6 +7,7 @@ main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/')
 def index():
+    """Home page - redirect to login if not authenticated"""
     if 'user_id' in session:
         return render_template('home.html')
     return redirect(url_for('main.login'))
@@ -14,6 +15,7 @@ def index():
 
 @main_bp.route('/login', methods=['GET', 'POST'])
 def login():
+    """Login page"""
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -34,6 +36,7 @@ def login():
 
 @main_bp.route('/logout')
 def logout():
+    """Logout and clear session"""
     session.clear()
     logout_user()
     return redirect(url_for('main.login'))

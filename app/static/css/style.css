@@ -2,8 +2,10 @@
 
 :root {
     --primary-color: #B11226;
+    /* Figma Red */
     --primary-dark: #940719;
     --secondary-color: #2C3E50;
+    /* Dark Blue/Gray for text/sidebar */
     --bg-color: #F5F5F5;
     --sidebar-bg: #FFFFFF;
     --sidebar-text: #333333;
@@ -21,6 +23,7 @@ body {
     margin: 0;
 }
 
+/* Sidebar */
 .sidebar {
     width: 260px;
     background-color: var(--sidebar-bg);
@@ -65,6 +68,7 @@ body {
 .nav-links a:hover,
 .nav-links a.active {
     background-color: #FFF0F0;
+    /* Light red bg */
     color: var(--primary-color);
 }
 
@@ -73,11 +77,13 @@ body {
     margin-top: auto;
 }
 
+/* Main Content */
 .content {
     flex: 1;
     background-color: var(--bg-color);
 }
 
+/* Cards */
 .card {
     background: var(--white);
     padding: 1.5rem;
@@ -86,6 +92,7 @@ body {
     margin-bottom: 1.5rem;
 }
 
+/* Forms */
 .form-group {
     margin-bottom: 1.25rem;
 }
@@ -139,6 +146,7 @@ button:hover,
     background-color: var(--primary-dark);
 }
 
+/* Tables */
 table {
     width: 100%;
     border-collapse: separate;
@@ -169,6 +177,7 @@ tr:last-child td {
     border-bottom: none;
 }
 
+/* Status Badges */
 .status-badge {
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;

@@ -7,12 +7,13 @@ from app.dao.settings_dao import SettingsDAO
 from sqlalchemy import func, extract
 from datetime import datetime, timedelta
 import calendar
-
+import random
 
 admin_bp = Blueprint('admin', __name__)
 
 
 def check_admin():
+    """Check if current user is admin"""
     return session.get('role') == 'admin'
 
 
@@ -21,6 +22,7 @@ def dashboard():
     if not check_admin():
         return redirect(url_for('main.login'))
 
+    # Filter params
     now = datetime.now()
     filter_day = request.args.get('day', '')
     filter_month = request.args.get('month', now.month)
@@ -38,14 +40,19 @@ def dashboard():
         filter_year = now.year
         filter_day = None
 
+    # ============================================
+    # 1. REVENUE DATA - Dữ liệu thật từ Invoices
+    # ============================================
     daily_revenue = invoice_dao.get_revenue_by_month(filter_month, filter_year)
     total_revenue = sum(daily_revenue.values())
 
+    # Fill missing days with 0
     _, num_days = calendar.monthrange(filter_year, filter_month)
     for day in range(1, num_days + 1):
         if day not in daily_revenue:
             daily_revenue[day] = 0
 
+    # Format for chart
     max_revenue = max(daily_revenue.values()) if daily_revenue.values() else 1
     chart_data = [
         {
@@ -106,17 +113,12 @@ def dashboard():
                            filter_year=filter_year)
 
 @admin_bp.route('/components')
-def components():
-    if not check_admin():
-        return redirect(url_for('main.login'))
-
-    all_components = Component.query.filter_by(is_deleted=False).all()
-
+def components_page():
+    components = component_dao.get_all_components()
     return render_template(
-        'admin/components.html',
-        all_components=all_components
+        'admin/accessories',
+        components=components
     )
-
 
 
 @admin_bp.route('/component/add', methods=['POST'])
@@ -124,40 +126,26 @@ def add_component():
     if not check_admin():
         return redirect(url_for('main.login'))
 
-    name = request.form['name'].strip()
+    name = request.form['name']
     current_price = float(request.form['current_price'])
     stock_quantity = int(request.form.get('stock_quantity', 0))
 
-    existing_component = Component.query.filter(
-        func.lower(Component.name) == name.lower(),
-        Component.is_deleted == False
-    ).first()
+    new_component = Component(
+        name=name,
+        current_price=current_price,
+        stock_quantity=stock_quantity
+    )
 
-    if existing_component:
-        flash('Add component failed: This component already exists!')
-        return redirect(url_for('admin.low_stock_alert'))
+    db.session.add(new_component)
+    db.session.commit()
 
-    try:
-        new_component = Component(
-            name=name,
-            current_price=current_price,
-            stock_quantity=stock_quantity
-        )
-        db.session.add(new_component)
-        db.session.commit()
-
-        flash('New component added successfully!', 'success')
-    except Exception as e:
-        db.session.rollback()
-        flash('Add component failed due to system error.', 'error')
-
-    return redirect(url_for('admin.low_stock_alert'))
-
-
+    flash('New component added successfully!')
+    return redirect(url_for('admin.components_page'))
 
 
 @admin_bp.route('/component/update/<int:component_id>', methods=['POST'])
 def update_component(component_id):
+    """Update a component"""
     if not check_admin():
         return redirect(url_for('main.login'))
     
@@ -173,6 +161,7 @@ def update_component(component_id):
 
 @admin_bp.route('/component/delete/<int:component_id>', methods=['POST'])
 def delete_component(component_id):
+    """Soft delete a component"""
     if not check_admin():
         return redirect(url_for('main.login'))
     
@@ -314,27 +303,23 @@ def update_vehicle_limit():
 
 
 
+
+# TESTING
+
 @admin_bp.route('/low-stock-alert')
 def low_stock_alert():
     if not check_admin():
         return redirect(url_for('main.login'))
 
-    all_components = Component.query.filter_by(is_deleted=False).all()
-
     threshold = ComponentDAO.get_low_stock_threshold()
+
     components = ComponentDAO.get_low_stock_components()
 
     components_data = []
     thirty_days_ago = datetime.now() - timedelta(days=30)
 
     for comp in components:
-
-        used = db.session.query(func.sum(RepairDetail.quantity)) \
-            .filter(RepairDetail.component_id == comp.id) \
-            .scalar() or 0
-
-        imported = comp.stock_quantity + used
-
+        # Thống kê sử dụng 30 ngày
         recent_usage = db.session.query(func.sum(RepairDetail.quantity)) \
             .join(RepairSlip, RepairDetail.repair_slip_id == RepairSlip.id) \
             .filter(
@@ -354,15 +339,9 @@ def low_stock_alert():
         components_data.append({
             'id': comp.id,
             'name': comp.name,
-
-            'stock_quantity': comp.stock_quantity,
-            'current_price': comp.current_price,
+            'current_stock': comp.stock_quantity,
             'price': comp.current_price,
-
-            'imported': imported,
-            'used': used,
             'recent_usage': recent_usage,
-
             'status': status,
             'status_text': status_text,
             'status_color': status_color
@@ -372,10 +351,8 @@ def low_stock_alert():
         'admin/low_stock_alert.html',
         components=components_data,
         threshold=threshold,
-        total_alerts=len(components_data),
-        all_components=all_components
+        total_alerts=len(components_data)
     )
-
 
 
 @admin_bp.route('/low-stock-count')
@@ -406,26 +383,27 @@ def update_stock_threshold():
     return redirect(url_for('admin.low_stock_alert'))
 
 
+# Nhap hang vao
 
 @admin_bp.route('/import-components', methods=['POST'])
 def import_components():
     if not check_admin():
         return {'success': False, 'message': 'Unauthorized'}
 
-    component_ids = request.form.getlist('component_id[]')
+    names = request.form.getlist('name[]')
     quantities = request.form.getlist('quantity[]')
 
-    for comp_id, qty in zip(component_ids, quantities):
-        component = Component.query.filter_by(
-            id=int(comp_id),
-            is_deleted=False
-        ).first()
+    for name, qty, price in zip(names, quantities):
+        component = Component.query.filter_by(name=name, is_deleted=False).first()
 
-        if not component:
-            continue
-
-        component.stock_quantity += int(qty)
+        if component:
+            component.stock_quantity += int(qty)
+        else:
+            component = Component(
+                name=name,
+                stock_quantity=int(qty),
+            )
+            db.session.add(component)
 
     db.session.commit()
     return {'success': True}
-

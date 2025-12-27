@@ -23,6 +23,7 @@
                     <span class="label">License:</span>
                     <span class="value">{{ repair.license_plate }}</span>
                 </div>
+                <!-- Add owner info if available in query -->
             </div>
             <div class="detail-section">
                 <h3>Status</h3>
@@ -59,6 +60,7 @@
                         <td>{{ "{:,.0f}".format(item.price_at_time) }}</td>
                         <td>{{ "{:,.0f}".format(item.price_at_time * item.quantity) }}</td>
                         <td>
+                            <!-- Delete action -->
                         </td>
                     </tr>
                     {% else %}

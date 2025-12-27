@@ -5,6 +5,7 @@ from datetime import datetime
 
 
 def create_invoice(repair_slip_id, cashier_id, total_amount, vat_rate):
+    """Create a new invoice"""
     invoice = Invoice(
         repair_slip_id=repair_slip_id,
         cashier_id=cashier_id,
@@ -18,10 +19,12 @@ def create_invoice(repair_slip_id, cashier_id, total_amount, vat_rate):
 
 
 def get_invoice_by_repair_id(repair_id):
+    """Get invoice by repair slip ID"""
     return Invoice.query.filter(Invoice.repair_slip_id == repair_id).first()
 
 
 def get_recent_invoices(limit=10):
+    """Get recent invoices with car info"""
     return db.session.query(Invoice, Car)\
         .join(RepairSlip, Invoice.repair_slip_id == RepairSlip.id)\
         .join(ReceptionSlip, RepairSlip.reception_slip_id == ReceptionSlip.id)\
@@ -32,6 +35,7 @@ def get_recent_invoices(limit=10):
 
 
 def get_revenue_by_month(month, year):
+    """Get daily revenue for a month"""
     results = db.session.query(
         extract('day', Invoice.created_at).label('day'),
         func.sum(Invoice.total_amount).label('total')
@@ -46,6 +50,7 @@ def get_revenue_by_month(month, year):
 
 
 def get_total_revenue_by_month(month, year):
+    """Get total revenue for a month"""
     result = db.session.query(
         func.sum(Invoice.total_amount).label('total')
     ).filter(

@@ -13,6 +13,7 @@
         display: flex;
     }
 
+    /* Hide sidebar if it exists in base, or override layout */
     .sidebar {
         display: none;
     }
@@ -26,8 +27,7 @@
         background-image: unset !important;
     }
 
-
-
+    /* Header */
     .top-header {
         background-color: #990000;
         color: white;
@@ -49,7 +49,11 @@
         height: 32px;
         background-color: #FFD700;
         border-radius: 50%;
-        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #333;
     }
 
     .center-logo img {
@@ -79,8 +83,7 @@
         transform: scale(1.1);
     }
 
-
-
+/* Notification Bell */
     .notification-bell {
         position: relative;
     }
@@ -92,8 +95,6 @@
         background-color: #FF3333;
         color: white;
         border-radius: 50%;
-        min-width: 20px;
-        height: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -109,12 +110,16 @@
     }
 
     @keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.1); }
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
     }
 
 
-
+    /* Main Content */
     .main-body {
         flex: 1;
         padding: 2rem 3rem;
@@ -128,8 +133,7 @@
         color: #333;
     }
 
-
-
+    /* Tab Navigation */
     .tab-nav {
         display: flex;
         gap: 1rem;
@@ -152,7 +156,6 @@
     .tab-btn.active {
         background-color: #990000;
         color: white;
-        border-color: #990000;
     }
 
     .tab-btn:hover {
@@ -160,47 +163,35 @@
         color: white;
     }
 
-
-
+    /* Quantity Section */
     .quantity-section {
         background: white;
         padding: 2rem;
         border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         margin-bottom: 2rem;
     }
 
     .section-title {
         text-align: center;
         font-weight: bold;
-        font-size: 1.1rem;
         margin-bottom: 1.5rem;
         padding-bottom: 0.5rem;
         border-bottom: 2px solid #990000;
-        color: #333;
     }
 
     .bar-chart-container {
-        background-color: #F0F0F0;
+        background-color: #C0C0C0;
         padding: 2rem;
         border-radius: 4px;
-        height: 350px;
-        position: relative;
+        min-height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #666;
     }
 
-    .total-inventory {
-        text-align: center;
-        margin-top: 1rem;
-        padding: 1rem;
-        background-color: #f9f9f9;
-        border-radius: 4px;
-        font-weight: bold;
-        color: #990000;
-        font-size: 1.1rem;
-    }
-
-
-
+    /* Pie Charts Grid */
     .pie-charts-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -212,121 +203,24 @@
         background: white;
         padding: 2rem;
         border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
-    .pie-chart-wrapper {
-        height: 280px;
-        margin: 1.5rem 0;
-        position: relative;
-    }
-
-    .stats-list {
-        padding: 0 1rem;
-    }
-
-    .stat-item {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 0.75rem;
-        padding: 0.5rem;
-        border-radius: 4px;
-        transition: background-color 0.2s;
-    }
-
-    .stat-item:hover {
-        background-color: #f5f5f5;
-    }
-
-
-
-    .components-section {
-        background: white;
-        padding: 2rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        margin-top: 2rem;
-    }
-
-    .table-header {
-        text-align: center;
-        align-items: center;
-        margin-bottom: 1.5rem;
-        font-weight: bold;
-
-    }
-
-    .btn-add-component {
-        background-color: #990000;
-        color: white;
-        border: none;
-        padding: 0.75rem 1.5rem;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: bold;
+    .pie-chart-placeholder {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background-color: #C0C0C0;
+        margin: 2rem auto;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        transition: background-color 0.3s;
-    }
-
-    .btn-add-component:hover {
-        background-color: #cc0000;
-    }
-
-    .components-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 1rem;
-    }
-
-    .components-table thead {
-        background-color: #f5f5f5;
-    }
-
-    .components-table th {
-        padding: 1rem;
-        text-align: left;
-        font-weight: bold;
-        border-bottom: 2px solid #990000;
-    }
-
-    .components-table td {
-        padding: 0.75rem 1rem;
-        border-bottom: 1px solid #eee;
-    }
-
-    .components-table tbody tr:hover {
-        background-color: #f9f9f9;
-    }
-
-    .components-table input[type="number"] {
-        width: 100%;
-        padding: 0.5rem;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        text-align: right;
-    }
-
-    .btn-update-price {
-        background-color: #990000;
-        color: white;
-        border: none;
-        padding: 0.75rem 2rem;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: bold;
-        margin-top: 1rem;
-        width: 100%;
-        transition: background-color 0.3s;
-    }
-
-    .btn-update-price:hover {
-        background-color: #cc0000;
+        justify-content: center;
+        color: #666;
     }
 
 
 
+    /* Alert */
     .alert {
         padding: 1rem;
         border-radius: 4px;
@@ -334,16 +228,9 @@
         background-color: #d4edda;
         color: #155724;
         border: 1px solid #c3e6cb;
-        animation: slideDown 0.3s ease;
     }
 
-    @keyframes slideDown {
-        from { opacity: 0; transform: translateY(-20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-
-
+    /* Responsive */
     @media (max-width: 1024px) {
         .pie-charts-grid {
             grid-template-columns: 1fr;
@@ -362,80 +249,86 @@
 
     <div class="center-logo">
         <a href="{{ url_for('admin.dashboard') }}">
-            <img src="{{ url_for('static', filename='images/logo-white.png') }}" alt="CRC">
+            <img src="{{ url_for('static', filename='images/logo-white.png') }}"
+                 alt="CRC">
         </a>
     </div>
 
+
     <div class="header-actions">
-        <a href="{{ url_for('admin.low_stock_alert') }}" class="notification-bell" title="Low Stock Alerts">
+                <a href="{{ url_for('admin.low_stock_alert') }}" style="position: relative;">
             <img src="https://cdn-icons-png.flaticon.com/512/3602/3602123.png" alt="Notifications">
-            <span id="notification-badge" class="notification-badge zero">0</span>
+            <span id="notification-badge" class="notification-badge">{{ total_alerts }}</span>
         </a>
-        <a href="{{ url_for('main.logout') }}" title="Logout">
-            <img src="{{ url_for('static', filename='images/logout.png') }}" alt="Logout">
+        <a href="{{ url_for('main.logout') }}">
+            <img src="{{ url_for('static', filename='images/logout.png') }}"
+                 alt="Logout"
+                 style="width: 30px; height: 32px; cursor: pointer;">
         </a>
+
     </div>
 </div>
 
 <div class="main-body">
-
-
+    <!-- Flash Messages -->
     {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
     {% endwith %}
 
 
-
+    <!-- Tab Navigation -->
     <div class="tab-nav">
         <button class="tab-btn active">Accessory & Update price</button>
+        <!-- Sửa button tab này -->
         <button class="tab-btn" onclick="window.location.href='{{ url_for('admin.vat_settings') }}'">
             VAT & Number of vehicles
         </button>
     </div>
 
-
+    <!-- Quantity in Stock Section -->
     <div class="quantity-section">
-        <div class="section-title">Quantity in Stock</div>
+        <div class="section-title">Quantity in stock</div>
         <div class="bar-chart-container">
-            <canvas id="stockBarChart"></canvas>
-        </div>
-        <div class="total-inventory">
-            Total Inventory: {{ "{:,}".format(total_inventory) }} items
+            <div style="text-align: center;">
+                <p>Bar chart visualization</p>
+                <p style="font-size: 0.9rem; color: #999;">Total inventory: {{ total_inventory }} items</p>
+            </div>
         </div>
     </div>
 
-
+    <!-- Pie Charts Grid -->
     <div class="pie-charts-grid">
+        <!-- Many Imported Components -->
         <div class="pie-card">
-            <div class="section-title">Many Imported Components</div>
-            <div class="pie-chart-wrapper">
-                <canvas id="importedPieChart"></canvas>
+            <div class="section-title">Many imported components</div>
+            <div class="pie-chart-placeholder">
+                Pie Chart
             </div>
-            <div class="stats-list">
+            <div style="padding: 0 2rem;">
                 {% for item in most_imported %}
-                <div class="stat-item">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
                     <span>{{ item.name }}:</span>
-                    <strong>{{ item.imported }} units</strong>
+                    <strong>{{ item.imported }}</strong>
                 </div>
                 {% endfor %}
             </div>
         </div>
 
-
+        <!-- Most Used Components -->
         <div class="pie-card">
-            <div class="section-title">Most Used Components</div>
-            <div class="pie-chart-wrapper">
-                <canvas id="usedPieChart"></canvas>
+            <div class="section-title">Most used components</div>
+            <div class="pie-chart-placeholder">
+                Pie Chart
             </div>
-            <div class="stats-list">
+            <div style="padding: 0 2rem;">
                 {% for item in most_used %}
-                <div class="stat-item">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
                     <span>{{ item.name }}:</span>
-                    <strong>{{ item.used }} times</strong>
+                    <strong>{{ item.used }}</strong>
                 </div>
                 {% endfor %}
             </div>
@@ -443,281 +336,36 @@
     </div>
 
 
-    <div class="components-section">
-        <div class="table-header">
-            <div class="section-title" style="margin: 0; border: none;">LIST OF COMPONENTS</div>
-        </div>
-
-        <form method="POST" action="{{ url_for('admin.batch_update_prices') }}">
-            <table class="components-table">
-                <thead>
-                    <tr>
-                        <th>Code</th>
-                        <th>Name</th>
-                        <th style="text-align: center;">Import</th>
-                        <th style="text-align: center;">Used</th>
-                        <th style="text-align: center;">Inventory</th>
-                        <th style="text-align: right;">Unit Price (VND)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if components %}
-                        {% for comp in components %}
-                        <tr>
-                            <td><strong>{{ comp.code }}</strong></td>
-                            <td>{{ comp.name }}</td>
-                            <td style="text-align: center;">{{ comp.imported }}</td>
-                            <td style="text-align: center;">{{ comp.used }}</td>
-                            <td style="text-align: center;">
-                                <strong style="color: {{ '#DC3545' if comp.inventory < 5 else '#FFA500' if comp.inventory < 10 else '#333' }}">
-                                    {{ comp.inventory }}
-                                </strong>
-                            </td>
-                            <td>
-                                <input type="number"
-                                       name="price_{{ comp.id }}"
-                                       value="{{ comp.price|int }}"
-                                       step="1000"
-                                       min="0">
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="6" style="text-align: center; color: #666; padding: 2rem;">
-                                No components available
-                            </td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-            </table>
-
-            {% if components %}
-            <button type="submit" class="btn-update-price">Update Prices</button>
-            {% endif %}
-        </form>
-    </div>
 </div>
 
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-
 <script>
-function updateNotificationBadge() {
-    fetch('{{ url_for("admin.low_stock_count") }}')
-        .then(response => response.json())
-        .then(data => {
-            const badge = document.getElementById('notification-badge');
-            if (badge) {
-                badge.textContent = data.count;
-                badge.classList.toggle('zero', data.count === 0);
-            }
-        })
-        .catch(error => console.error('Error:', error));
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    updateNotificationBadge();
-    setInterval(updateNotificationBadge, 60000);
-
-    const alerts = document.querySelectorAll('.alert');
-    alerts.forEach(alert => {
-        setTimeout(() => {
-            alert.style.transition = 'opacity 0.5s, transform 0.5s';
-            alert.style.opacity = '0';
-            alert.style.transform = 'translateY(-20px)';
-            setTimeout(() => alert.remove(), 500);
-        }, 5000);
-    });
-
-    {% if components %}
-    const stockCtx = document.getElementById('stockBarChart').getContext('2d');
-    new Chart(stockCtx, {
-        type: 'bar',
-        data: {
-            labels: [
-                {% for comp in components[:10] %}
-                '{{ comp.name[:20] }}'{{ ',' if not loop.last else '' }}
-                {% endfor %}
-            ],
-            datasets: [{
-                label: 'Inventory Quantity',
-                data: [
-                    {% for comp in components[:10] %}
-                    {{ comp.inventory }}{{ ',' if not loop.last else '' }}
-                    {% endfor %}
-                ],
-                backgroundColor: '#990000',
-                borderColor: '#770000',
-                borderWidth: 1,
-                borderRadius: 4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return 'Stock: ' + context.parsed.y + ' units';
-                        }
-                    },
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                    padding: 12
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        precision: 0,
-                        font: { size: 11 }
-                    },
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.05)'
-                    }
-                },
-                x: {
-                    ticks: {
-                        font: { size: 10 }
-                    },
-                    grid: {
-                        display: false
-                    }
-                }
-            }
-        }
-    });
-    {% endif %}
-
-
-    {% if most_imported %}
-    const importedCtx = document.getElementById('importedPieChart').getContext('2d');
-    new Chart(importedCtx, {
-        type: 'pie',
-        data: {
-            labels: [
-                {% for item in most_imported %}
-                '{{ item.name }}'{{ ',' if not loop.last else '' }}
-                {% endfor %}
-            ],
-            datasets: [{
-                data: [
-                    {% for item in most_imported %}
-                    {{ item.imported }}{{ ',' if not loop.last else '' }}
-                    {% endfor %}
-                ],
-                backgroundColor: [
-                    '#990000', '#CC0000', '#FF3333', '#FF6666', '#FF9999'
-                ],
-                borderWidth: 3,
-                borderColor: '#fff'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        padding: 15,
-                        font: { size: 11 }
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const label = context.label || '';
-                            const value = context.parsed || 0;
-                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                            const percentage = ((value / total) * 100).toFixed(1);
-                            return label + ': ' + value + ' units (' + percentage + '%)';
-                        }
-                    },
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                    padding: 12
-                }
-            }
-        }
-    });
-    {% else %}
-    document.getElementById('importedPieChart').parentElement.innerHTML =
-        '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #999;">No data available</div>';
-    {% endif %}
-
-
-    {% if most_used %}
-    const usedCtx = document.getElementById('usedPieChart').getContext('2d');
-    new Chart(usedCtx, {
-        type: 'pie',
-        data: {
-            labels: [
-                {% for item in most_used %}
-                '{{ item.name }}'{{ ',' if not loop.last else '' }}
-                {% endfor %}
-            ],
-            datasets: [{
-                data: [
-                    {% for item in most_used %}
-                    {{ item.used }}{{ ',' if not loop.last else '' }}
-                    {% endfor %}
-                ],
-                backgroundColor: [
-                    '#003366', '#0055AA', '#0077CC', '#3399FF', '#66BBFF'
-                ],
-                borderWidth: 3,
-                borderColor: '#fff'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        padding: 15,
-                        font: { size: 11 }
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const label = context.label || '';
-                            const value = context.parsed || 0;
-                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                            const percentage = ((value / total) * 100).toFixed(1);
-                            return label + ': ' + value + ' times (' + percentage + '%)';
-                        }
-                    },
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                    padding: 12
-                }
-            }
-        }
-    });
-    {% else %}
-    document.getElementById('usedPieChart').parentElement.innerHTML =
-        '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #999;">No data available</div>';
-    {% endif %}
-
-
-    const priceInputs = document.querySelectorAll('input[type="number"]');
-    priceInputs.forEach(input => {
-        input.addEventListener('focus', function() {
-            this.style.borderColor = '#990000';
-            this.style.boxShadow = '0 0 0 2px rgba(153, 0, 0, 0.1)';
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-hide alerts after 5 seconds
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            }, 5000);
         });
-        input.addEventListener('blur', function() {
-            this.style.borderColor = '#ccc';
-            this.style.boxShadow = 'none';
+
+        // Format number inputs
+        const priceInputs = document.querySelectorAll('input[type="number"]');
+        priceInputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.borderColor = '#990000';
+            });
+            input.addEventListener('blur', function() {
+                this.style.borderColor = '#ccc';
+            });
         });
     });
-});
 </script>
 {% endblock %}
+
+
+(navigation)
+<a href="{{ url_for('admin.accessories') }}" class="nav-link">
+    <span>📦</span> Accessories Management
+</a>

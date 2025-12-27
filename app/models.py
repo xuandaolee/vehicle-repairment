@@ -27,7 +27,7 @@ class User(db.Model, UserMixin):
     id = Column(Integer, primary_key=True)
     username = Column(String(50), unique=True, nullable=False)
     password = Column(String(255), nullable=False)
-    role = Column(String(20), nullable=False)
+    role = Column(String(20), nullable=False)  # Using String instead of Enum for compatibility
     full_name = Column(String(100))
 
     def __str__(self):

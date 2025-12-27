@@ -8,19 +8,24 @@ cashier_bp = Blueprint('cashier', __name__)
 
 
 def check_cashier():
+    """Check if current user is cashier or admin"""
     role = session.get('role')
     return role in ['cashier', 'admin']
 
 
 @cashier_bp.route('/')
 def home():
+    """Cashier home page"""
     if not check_cashier():
         return redirect(url_for('main.login'))
-
+    
+    # Get VAT rate
     vat_rate = settings_dao.get_setting_float('vat_rate', 10.0)
 
+    # Get filter
     filter_status = request.args.get('filter')
-
+    
+    # Build query based on filter
     query = db.session.query(ReceptionSlip, Car, RepairSlip)\
         .join(Car, ReceptionSlip.car_id == Car.id)\
         .join(RepairSlip, ReceptionSlip.id == RepairSlip.reception_slip_id)
@@ -36,6 +41,7 @@ def home():
     
     completed_slips = []
     for slip, car, repair in results:
+        # Calculate total
         details = RepairDetail.query.filter_by(repair_slip_id=repair.id).all()
         subtotal = sum(d.price_at_time * d.quantity + d.labor_fee for d in details)
         
@@ -52,6 +58,7 @@ def home():
             'total_amount': float(subtotal) if subtotal else 0.0
         })
 
+    # Get recent invoices
     recent_invoices_data = invoice_dao.get_recent_invoices(10)
     recent_invoices = []
     for inv, car in recent_invoices_data:
@@ -69,6 +76,7 @@ def home():
 
 @cashier_bp.route('/invoice/<int:repair_id>')
 def invoice(repair_id):
+    """View invoice details"""
     if not check_cashier():
         return redirect(url_for('main.login'))
     
@@ -90,7 +98,8 @@ def invoice(repair_id):
         'reception_date': slip.reception_date,
         'status': slip.status
     }
-
+    
+    # Get items
     details = repair_dao.get_repair_details(repair_id)
     items = []
     for detail, component in details:
@@ -103,9 +112,11 @@ def invoice(repair_id):
             'labor_fee': detail.labor_fee,
             'name': component.name if component else None
         })
-
+    
+    # Get VAT rate
     vat_rate = settings_dao.get_setting_float('vat_rate', 10.0)
-
+    
+    # Calculate totals
     subtotal = sum(item['price_at_time'] * item['quantity'] + item['labor_fee'] for item in items)
     vat_amount = float(subtotal) * (vat_rate / 100)
     total_amount = float(subtotal) + vat_amount
@@ -124,11 +135,14 @@ def process_payment(repair_id):
         return redirect(url_for('main.login'))
     
     total_amount = float(request.form['total_amount'])
-
+    
+    # Get VAT rate
     vat_rate = settings_dao.get_setting_float('vat_rate', 10.0)
-
+    
+    # Create invoice
     invoice_dao.create_invoice(repair_id, session['user_id'], total_amount, vat_rate)
-
+    
+    # Update reception slip status to 'paid'
     repair = repair_dao.get_repair_only_by_id(repair_id)
     if repair:
         reception_dao.update_slip_status(repair.reception_slip_id, 'paid')
